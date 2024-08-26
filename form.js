@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateInput(name) {
-        const regex = /^[A-Za-z]+(?:[ ]+[A-Za-z]+)*$/;
+        const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ' ]+$/;
         return regex.test(name);
     }
 
