@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar Flatpickr en el campo de fecha
     flatpickr("#birthDate", {
-        dateFormat: "d-m-Y",
+        dateFormat: "m-d-Y",
         locale: "es" // Establecer el idioma a español
 
     });
 
     // Agregar países al select
     const countrySelect = document.getElementById('country');
-    const countries = ["Argentina", "Brasil", "Chile", "Colombia", "Ecuador", "México", "Perú", "Uruguay", "Venezuela"];
+    const countries = ["Argentina", "Brasil", "Bolivia", "Chile", "Colombia", "Ecuador", "México", "Paraguay", "Perú", "Uruguay", "Venezuela"];
 
     countries.forEach(country => {
         const option = document.createElement('option');
@@ -25,11 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value;
         const name = document.getElementById('name').value;
         const lastName = document.getElementById('lastName').value;
-        const birthDateElement = document.getElementById('birthDate');
-        let birthDate;
-        if (birthDateElement.fp && birthDateElement.fp.selectedDates[0]) {
-            birthDate = birthDateElement.fp.selectedDates[0].toISOString().split('T')[0];
-        }
+        const birthDateElement = document.getElementById('birthDate').value;        
 
         if (!validateEmail(email)) {
             alert('El correo electrónico no es válido. Ingrese un correo válido, por ejemplo: "email@ejemplo.com"');
@@ -46,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (validateBirthDate(birthDate)) {
+        if (!validateBirthDate(birthDateElement)) {
             alert('No podemos registrarte. Para poder registrarte tenes que ser mayor de 18 años.');
             return;
         }
-        
+
         alert('Registro exitoso!');
     });
 
@@ -68,13 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
         const ageLimit = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         ageLimit.setFullYear(ageLimit.getFullYear() - 18);
-    
-        const birthDateObj = new Date(birthDate);
-    
-        if (birthDateObj >= ageLimit) {
-            return true; 
+        
+        const bD = new Date(birthDate);
+        const year = bD.getFullYear();
+        const month = bD.getMonth();
+        const day = bD.getDate();
+
+        if (year > ageLimit.getFullYear()) {
+            return false;
+        } else if (year < ageLimit.getFullYear()) {
+            return true;
         } else {
-            return false; 
+            if (month < ageLimit.getMonth()) {
+                return true;
+            } else if (month > ageLimit.getMonth()) {
+                return false;
+            } else if (month == ageLimit.getMonth()) {
+                if (day <= ageLimit.getDate()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
     }
 
