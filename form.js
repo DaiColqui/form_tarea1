@@ -25,29 +25,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value;
         const name = document.getElementById('name').value;
         const lastName = document.getElementById('lastName').value;
-        const birthDateElement = document.getElementById('birthDate').value;        
+        const birthDateElement = document.getElementById('birthDate').value;
 
         if (!validateEmail(email)) {
-            alert('El correo electrónico no es válido. Ingrese un correo válido, por ejemplo: "email@ejemplo.com"');
+            alert('El correo electrónico no es válido. Ingrese un correo válido, por ejemplo: "email@ejemplo.com".');
             return;
         }
 
         if (!validateInput(name)) {
-            alert('Nombre no válido. Ingrese un nombre válido, por ejemplo: "Daiana"');
+            alert('Nombre no válido. Ingrese un nombre válido, por ejemplo: "Daiana".');
             return;
         }
 
         if (!validateInput(lastName)) {
-            alert('Apellido no válido. Ingrese un apellido válido, por ejemplo: "Colquicocha"');
+            alert('Apellido no válido. Ingrese un apellido válido, por ejemplo: "Colquicocha".');
             return;
         }
 
-        if (!validateBirthDate(birthDateElement)) {
+        if (birthDateElement.trim() === '') {
+            alert('La fecha de nacimiento no puede estar vacía. Por favor ingrese una fecha válida.');
+            return;
+        }
+
+        if (validateBirthDate(birthDateElement) == 1) {
             alert('No podemos registrarte. Para poder registrarte tenes que ser mayor de 18 años.');
             return;
+        } else if (validateBirthDate(birthDateElement) == 2) {
+            alert('Según esta fecha todavía no has nacido. Por favor ingresa una fecha válida');
+            return;
         }
 
-        alert('Registro exitoso!');
+
+        alert('¡Registro exitoso!');
     });
 
     function validateEmail(email) {
@@ -56,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateInput(name) {
+        if (!name.trim()) {
+            return false;
+        }
         const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ' ]+$/;
         return regex.test(name);
     }
@@ -64,28 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
         const ageLimit = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         ageLimit.setFullYear(ageLimit.getFullYear() - 18);
-        
-        const bD = new Date(birthDate);
-        const year = bD.getFullYear();
-        const month = bD.getMonth();
-        const day = bD.getDate();
 
-        if (year > ageLimit.getFullYear()) {
-            return false;
-        } else if (year < ageLimit.getFullYear()) {
-            return true;
+        const bD = new Date(birthDate);
+
+        if (bD <= ageLimit) {
+            return 0;
+        } else if (bD > today) {
+            return 2;
         } else {
-            if (month < ageLimit.getMonth()) {
-                return true;
-            } else if (month > ageLimit.getMonth()) {
-                return false;
-            } else if (month == ageLimit.getMonth()) {
-                if (day <= ageLimit.getDate()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+            return 1;
         }
     }
 
